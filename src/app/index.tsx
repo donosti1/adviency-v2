@@ -225,11 +225,13 @@ function App() {
           {gifts && gifts.length > 0 ? (
             <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>
           ) : null}
-          <FormModal
-            clearGiftInput={clearGiftInput}
-            giftMessage={giftMessage}
-            handleAddGift={handleAddGift}
-          />
+          {!gifts ? null : (
+            <FormModal
+              clearGiftInput={clearGiftInput}
+              giftMessage={giftMessage}
+              handleAddGift={handleAddGift}
+            />
+          )}
         </Stack>
       </Stack>
     </Stack>
