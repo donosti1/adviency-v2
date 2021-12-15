@@ -106,6 +106,7 @@ function App() {
   }
 
   useEffect(() => {
+    //debugger;
     setTimeout(() => {
       api.gifts.list().then((gifts) => setGifts(gifts));
     }, 1500);
@@ -207,7 +208,7 @@ function App() {
             <Stack alignItems="center" spacing={8}>
               <Text>Cargando...</Text>
               <Spinner
-                color="blue.500"
+                color="secondary.500"
                 emptyColor="gray.200"
                 label="Cargando..."
                 size="xl"

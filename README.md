@@ -17,7 +17,7 @@ https://twitter.com/goncy/status/1466050967808401409
 
 Consigna del día:
 
-Día 14: Nuestra aplicación no es muy accesible, hagamos que podamos agregar, borrar y editar regalos sin tocar el mouse.
+Día 15: Pronto tendremos que preparar una api para nuestra aplicación, preparemos un método para traernos nuestros regalos que use promesas o async await.
 
 ## My process
 
