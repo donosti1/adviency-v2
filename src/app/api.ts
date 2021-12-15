@@ -2,7 +2,7 @@ import { sampleGifts, Users } from "./constants";
 import { Gift } from "./types";
 export default {
   gifts: {
-    list: () => {
+    list: async () => {
       const savedItems = localStorage.getItem("adviency");
 
       return savedItems ? JSON.parse(savedItems) : sampleGifts;

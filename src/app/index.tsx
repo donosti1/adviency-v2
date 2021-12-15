@@ -5,9 +5,8 @@ import {
   Heading,
   Stack,
   Text,
-  Input,
-  useRangeSlider,
   Icon,
+  Spinner,
 } from "@chakra-ui/react";
 import { BsTrashFill } from "react-icons/bs";
 
@@ -18,79 +17,108 @@ import { Users } from "./constants";
 import EditModal from "./components/EditModal";
 
 function App() {
-  const [gifts, setGifts] = useState(api.gifts.list);
+  const [gifts, setGifts] = useState<Gift[] | null>(null);
   const [giftMessage, setGiftMessage] = useState("");
 
   function handleDeteleItem(id: number) {
-    setGifts(
-      gifts.filter((gift: Gift) => {
-        return gift.id !== id;
-      })
-    );
+    if (gifts) {
+      setGifts(
+        gifts.filter((gift: Gift) => {
+          return gift.id !== id;
+        })
+      );
+    }
   }
   function handleDeteleAll() {
     setGifts([]);
   }
   function handleAddGift(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const giftTitle = e.currentTarget.giftTitle.value;
+    if (gifts) {
+      const giftTitle = e.currentTarget.giftTitle.value;
 
-    if (!giftTitle) {
-      setGiftMessage("Ingresa un regalo");
+      if (!giftTitle) {
+        setGiftMessage("Ingresa un regalo");
 
-      return false;
-    } else if (
-      gifts.some((g: Gift) => g.title.toLowerCase() === giftTitle.toLowerCase())
-    ) {
-      setGiftMessage("Regalo repetido");
+        return false;
+      } else if (
+        gifts.some(
+          (g: Gift) => g.title.toLowerCase() === giftTitle.toLowerCase()
+        )
+      ) {
+        setGiftMessage("Regalo repetido");
 
+        return false;
+      }
+      const giftQty = e.currentTarget.giftQty.value;
+      const giftImgSrc = e.currentTarget.imgSrc.value;
+      const owner = e.currentTarget.owner.value;
+
+      if (!owner) {
+        setGiftMessage("Ingrese un destinatario");
+
+        return false;
+      }
+      const newGift: Gift = {
+        id: Date.now(),
+        qty:
+          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+        ownerId: Number(owner),
+        title: giftTitle,
+        imgSrc: giftImgSrc,
+      };
+
+      setGifts([...gifts, newGift]);
+      e.currentTarget.giftTitle.value = "";
+      e.currentTarget.giftQty.value = "";
+      e.currentTarget.imgSrc.value = "";
+
+      return true;
+    } else {
       return false;
     }
-    const giftQty = e.currentTarget.giftQty.value;
-    const giftImgSrc = e.currentTarget.imgSrc.value;
-    const owner = e.currentTarget.owner.value;
-    const newGift: Gift = {
-      id: Date.now(),
-      qty: Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
-      ownerId: Number(owner),
-      title: giftTitle,
-      imgSrc: giftImgSrc,
-    };
-
-    setGifts([...gifts, newGift]);
-    e.currentTarget.giftTitle.value = "";
-    e.currentTarget.giftQty.value = "";
-    e.currentTarget.imgSrc.value = "";
-
-    return true;
   }
   function handleEditGift(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const giftTitle = e.currentTarget.giftTitle.value;
-    const giftQty = e.currentTarget.giftQty.value;
-    const giftImgSrc = e.currentTarget.imgSrc.value;
-    const owner = e.currentTarget.owner.value;
-    const originalOwner = e.currentTarget.originalOwner.value;
-    const giftId = Number(e.currentTarget.giftId.value);
+    if (gifts) {
+      const giftTitle = e.currentTarget.giftTitle.value;
+      const giftQty = e.currentTarget.giftQty.value;
+      const giftImgSrc = e.currentTarget.imgSrc.value;
+      const owner = e.currentTarget.owner.value;
+      const originalOwner = e.currentTarget.originalOwner.value;
+      const giftId = Number(e.currentTarget.giftId.value);
 
-    const updatedGift: Gift = {
-      id: giftId,
-      qty: Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
-      ownerId: owner != "" ? Number(owner) : Number(originalOwner),
-      title: giftTitle,
-      imgSrc: giftImgSrc,
-    };
+      const updatedGift: Gift = {
+        id: giftId,
+        qty:
+          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+        ownerId: owner != "" ? Number(owner) : Number(originalOwner),
+        title: giftTitle,
+        imgSrc: giftImgSrc,
+      };
 
-    setGifts(gifts.map((gi: Gift) => (gi.id === giftId ? updatedGift : gi)));
+      setGifts(gifts.map((gi: Gift) => (gi.id === giftId ? updatedGift : gi)));
 
-    return true;
+      return true;
+    } else {
+      return false;
+    }
   }
+
   useEffect(() => {
-    if (gifts.length) {
+    //debugger;
+    setTimeout(() => {
+      api.gifts.list().then((gifts) => setGifts(gifts));
+    }, 1500);
+  }, []);
+
+  useEffect(() => {
+    if (gifts && gifts.length) {
       return localStorage.setItem("adviency", JSON.stringify(gifts));
     }
-
-    return localStorage.removeItem("adviency");
+    if (gifts) {
+      return localStorage.removeItem("adviency");
+    }
   }, [gifts]);
   function clearGiftInput() {
     setGiftMessage("");
@@ -121,7 +149,7 @@ function App() {
           Regalos
         </Heading>
         <Stack>
-          {gifts.length > 0 ? (
+          {gifts && gifts.length > 0 ? (
             <Stack key={Date.now()} spacing={8}>
               <Stack
                 maxHeight="xs"
@@ -176,6 +204,18 @@ function App() {
                 ))}
               </Stack>
             </Stack>
+          ) : !gifts ? (
+            <Stack alignItems="center" spacing={8}>
+              <Text>Cargando...</Text>
+              <Spinner
+                color="secondary.500"
+                emptyColor="gray.200"
+                label="Cargando..."
+                size="xl"
+                speed="0.65s"
+                thickness="4px"
+              />
+            </Stack>
           ) : (
             <Stack>
               <Text>No hay Regalos, agregalos desde el formulario!</Text>
@@ -183,14 +223,16 @@ function App() {
           )}
         </Stack>
         <Stack direction="row" justifyContent="space-around">
-          {gifts.length > 0 ? (
+          {gifts && gifts.length > 0 ? (
             <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>
           ) : null}
-          <FormModal
-            clearGiftInput={clearGiftInput}
-            giftMessage={giftMessage}
-            handleAddGift={handleAddGift}
-          />
+          {!gifts ? null : (
+            <FormModal
+              clearGiftInput={clearGiftInput}
+              giftMessage={giftMessage}
+              handleAddGift={handleAddGift}
+            />
+          )}
         </Stack>
       </Stack>
     </Stack>
