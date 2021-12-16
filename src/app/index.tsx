@@ -20,6 +20,8 @@ function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
   const [giftMessage, setGiftMessage] = useState("");
 
+  const [ownerMessage, setOwnerMessage] = useState("");
+
   function handleDeteleItem(id: number) {
     if (gifts) {
       setGifts(
@@ -55,7 +57,7 @@ function App() {
       const owner = e.currentTarget.owner.value;
 
       if (!owner) {
-        setGiftMessage("Ingrese un destinatario");
+        setOwnerMessage("Ingrese un destinatario");
 
         return false;
       }
@@ -122,6 +124,9 @@ function App() {
   }, [gifts]);
   function clearGiftInput() {
     setGiftMessage("");
+  }
+  function clearOwnerMessage() {
+    setOwnerMessage("");
   }
 
   return (
@@ -229,8 +234,10 @@ function App() {
           {!gifts ? null : (
             <FormModal
               clearGiftInput={clearGiftInput}
+              clearOwnerMessage={clearOwnerMessage}
               giftMessage={giftMessage}
               handleAddGift={handleAddGift}
+              ownerMessage={ownerMessage}
             />
           )}
         </Stack>
