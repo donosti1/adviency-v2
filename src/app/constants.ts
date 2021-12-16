@@ -29,3 +29,16 @@ export const Users: Owners[] = [
   { value: 3, label: "Kahdri" },
   { value: 4, label: "Carolina" },
 ];
+
+export const randomGiftsList = [
+  "Camiseta",
+  "Medias",
+  "Tablet",
+  "Monitor",
+  "Juego cubos de hielo",
+  "Juego de llaves",
+  "Machete",
+  "Atornillador Eléctrico",
+  "Un auto",
+  "El departamento",
+];

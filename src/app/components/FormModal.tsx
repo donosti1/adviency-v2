@@ -15,16 +15,25 @@ import {
 } from "@chakra-ui/react";
 import Select from "react-select";
 import { MdAdd } from "react-icons/md";
-import { Users } from "../constants";
+import { Users, randomGiftsList } from "../constants";
 interface IFormModal {
   handleAddGift: (e: FormEvent<HTMLFormElement>) => boolean;
   giftMessage: string;
+  ownerMessage: string;
   clearGiftInput: VoidFunction;
+  clearOwnerMessage: VoidFunction;
 }
 
 export default function FormModal(props: IFormModal) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const firstField = useRef(null);
+  const firstField = useRef<HTMLInputElement>(null);
+
+  function randomGift() {
+    firstField.current
+      ? (firstField.current.value =
+          randomGiftsList[Math.floor(Math.random() * randomGiftsList.length)])
+      : null;
+  }
 
   function triggerAddGiftModal(e: FormEvent<HTMLFormElement>) {
     if (props.handleAddGift(e)) {
@@ -52,12 +61,17 @@ export default function FormModal(props: IFormModal) {
           <DrawerBody overflow="hidden">
             <form onSubmit={triggerAddGiftModal}>
               <Stack color="black">
-                <Input
-                  ref={firstField}
-                  name="giftTitle"
-                  placeholder="Regalo..."
-                  onChange={props.clearGiftInput}
-                />
+                <Stack direction="row">
+                  <Input
+                    ref={firstField}
+                    name="giftTitle"
+                    placeholder="Regalo..."
+                    onChange={props.clearGiftInput}
+                  />
+                  <Button alignSelf="center" onClick={randomGift}>
+                    Sorpresa!
+                  </Button>
+                </Stack>
                 <Text color="secondary.300" paddingLeft={4}>
                   {props.giftMessage}
                 </Text>
@@ -65,7 +79,11 @@ export default function FormModal(props: IFormModal) {
                   name="owner"
                   options={Users}
                   placeholder="Destinatario..."
+                  onChange={props.clearOwnerMessage}
                 />
+                <Text color="secondary.300" paddingLeft={4}>
+                  {props.ownerMessage}
+                </Text>
                 <Input name="giftQty" placeholder="Cantidad" type="number" />
                 <Input name="imgSrc" placeholder="Link a la imagen..." />
                 <Button type="submit">Agregar</Button>
