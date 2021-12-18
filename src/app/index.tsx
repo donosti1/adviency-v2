@@ -55,6 +55,7 @@ function App() {
       const giftQty = e.currentTarget.giftQty.value;
       const giftImgSrc = e.currentTarget.imgSrc.value;
       const owner = e.currentTarget.owner.value;
+      const unitPrice = Number(e.currentTarget.unitPrice.value);
 
       if (!owner) {
         setOwnerMessage("Ingrese un destinatario");
@@ -64,10 +65,13 @@ function App() {
       const newGift: Gift = {
         id: Date.now(),
         qty:
-          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+          Number(giftQty) < 1
+            ? 1
+            : Number(giftQty) /* > 6 ? 6 : Number(giftQty) */,
         ownerId: Number(owner),
         title: giftTitle,
         imgSrc: giftImgSrc,
+        unitPrice: unitPrice,
       };
 
       setGifts([...gifts, newGift]);
@@ -89,14 +93,18 @@ function App() {
       const owner = e.currentTarget.owner.value;
       const originalOwner = e.currentTarget.originalOwner.value;
       const giftId = Number(e.currentTarget.giftId.value);
+      const unitPrice = Number(e.currentTarget.unitPrice.value);
 
       const updatedGift: Gift = {
         id: giftId,
         qty:
-          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+          Number(giftQty) < 1
+            ? 1
+            : Number(giftQty) /* > 6 ? 6 : Number(giftQty) */,
         ownerId: owner != "" ? Number(owner) : Number(originalOwner),
         title: giftTitle,
         imgSrc: giftImgSrc,
+        unitPrice: unitPrice,
       };
 
       setGifts(gifts.map((gi: Gift) => (gi.id === giftId ? updatedGift : gi)));
@@ -109,9 +117,9 @@ function App() {
 
   useEffect(() => {
     //debugger;
-    setTimeout(() => {
-      api.gifts.list().then((gifts) => setGifts(gifts));
-    }, 1500);
+    //setTimeout(() => {
+    api.gifts.list().then((gifts) => setGifts(gifts));
+    //}, 1500);
   }, []);
 
   useEffect(() => {
@@ -148,7 +156,7 @@ function App() {
         boxShadow="rgb(38, 57, 77) 0px 20px 30px -10px"
         padding={8}
         spacing={4}
-        width="container.sm"
+        width={["90%", "container.sm"]}
       >
         <Heading as="h1" color="whiteAlpha.900" textAlign="center">
           Regalos
@@ -168,19 +176,19 @@ function App() {
                     alignItems="center"
                     direction="row"
                     justifyContent="space-between"
-                    spacing={8}
+                    spacing={[2, 8]}
                   >
                     <Stack
                       alignItems="center"
                       direction="row"
                       justifyContent="space-between"
-                      spacing={8}
+                      spacing={[2, 8]}
                       width="100%"
                     >
                       <Avatar name={gift.title} src={gift.imgSrc} />
                       <Stack
-                        alignItems="center"
-                        direction="row"
+                        alignItems={["flex-start", "center"]}
+                        direction={["column", "row"]}
                         justifyContent="space-between"
                         width="100%"
                       >
@@ -192,19 +200,36 @@ function App() {
                             }).map((us) => us.label)}
                           </Text>
                         </Stack>
-                        <Text>(Qty: {gift.qty})</Text>
+                        <Stack>
+                          <Text textAlign="right">Cant: {gift.qty}</Text>
+                          <Text textAlign="right">
+                            Precio:{" "}
+                            {Number(gift.unitPrice * gift.qty).toLocaleString(
+                              "es-AR",
+                              {
+                                useGrouping: true,
+                                style: "currency",
+                                currency: "ARS",
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }
+                            )}
+                          </Text>
+                        </Stack>
                       </Stack>
                     </Stack>
-                    <EditModal
-                      giftId={gift.id}
-                      handleEditGift={handleEditGift}
-                    />
-                    <Button
-                      _hover={{ bg: "red.300" }}
-                      onClick={() => handleDeteleItem(gift.id)}
-                    >
-                      <Icon as={BsTrashFill} />
-                    </Button>
+                    <Stack direction={["column", "row"]}>
+                      <EditModal
+                        giftId={gift.id}
+                        handleEditGift={handleEditGift}
+                      />
+                      <Button
+                        _hover={{ bg: "red.300" }}
+                        onClick={() => handleDeteleItem(gift.id)}
+                      >
+                        <Icon as={BsTrashFill} />
+                      </Button>
+                    </Stack>
                   </Stack>
                 ))}
               </Stack>
@@ -227,7 +252,7 @@ function App() {
             </Stack>
           )}
         </Stack>
-        <Stack direction="row" justifyContent="space-around">
+        <Stack direction={["column", "row"]} justifyContent="space-around">
           {gifts && gifts.length > 0 ? (
             <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>
           ) : null}

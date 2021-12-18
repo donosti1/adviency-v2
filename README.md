@@ -17,6 +17,10 @@ https://twitter.com/goncy/status/1466050967808401409
 
 Consigna del día:
 
+Día 17: Nos olvidamos de agregar un campo de precio para nuestros regalos! Aseguremosnos de mostrar el precio correcto tomando en cuenta la cantidad de unidades del regalo.
+
+Consignas anteriores:
+
 Día 16: La gente está perdiendo la creatividad y necesita una ayuda, agreguemos un botón para obtener un regalo aleatorio para el campo "regalo", podés tener una lista fija de regalos, no es necesario que sean generados.
 
 ## My process

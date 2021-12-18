@@ -94,6 +94,12 @@ export default function EditModal(props: IEditModal) {
                     name="imgSrc"
                     placeholder="Link a la imagen..."
                   />
+                  <Input
+                    defaultValue={gi.unitPrice}
+                    name="unitPrice"
+                    placeholder="Precio"
+                    type="number"
+                  />
                 </Stack>
               ))}
             </ModalBody>

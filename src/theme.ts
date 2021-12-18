@@ -39,7 +39,7 @@ export default extendTheme({
           bg: "primary.500",
           color: "white",
           fontSize: "sm",
-          px: 6,
+          px: [2, 4],
           _hover: {
             bg: "secondary.500",
           },

@@ -4,6 +4,7 @@ export interface Gift {
   ownerId: number;
   qty: number;
   imgSrc: string;
+  unitPrice: number;
 }
 export interface Owners {
   value: number;
