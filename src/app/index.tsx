@@ -19,6 +19,7 @@ import EditModal from "./components/EditModal";
 function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
   const [giftMessage, setGiftMessage] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const [ownerMessage, setOwnerMessage] = useState("");
 
@@ -124,6 +125,12 @@ function App() {
 
   useEffect(() => {
     if (gifts && gifts.length) {
+      const totalPrice = gifts.reduce((acc, currentGift) => {
+        return (acc = acc + currentGift.qty * currentGift.unitPrice);
+      }, 0);
+
+      setTotalPrice(totalPrice);
+
       return localStorage.setItem("adviency", JSON.stringify(gifts));
     }
     if (gifts) {
@@ -154,8 +161,8 @@ function App() {
         background="linear-gradient(22deg, var(--chakra-colors-secondary-300) 0%, var(--chakra-colors-secondary-100) 74%)"
         borderRadius="3xl"
         boxShadow="rgb(38, 57, 77) 0px 20px 30px -10px"
-        padding={8}
-        spacing={4}
+        padding={[4, 8]}
+        spacing={[2, 4]}
         width={["90%", "container.sm"]}
       >
         <Heading as="h1" color="whiteAlpha.900" textAlign="center">
@@ -193,16 +200,20 @@ function App() {
                         width="100%"
                       >
                         <Stack spacing={0}>
-                          <Text>{gift.title}</Text>
-                          <Text>
+                          <Text fontSize={["sm", "md"]}>
+                            {gift.title} ({gift.qty})
+                          </Text>
+                          <Text fontSize={["sm", "md"]}>
                             {Users.filter((us) => {
                               return us.value === gift.ownerId;
                             }).map((us) => us.label)}
                           </Text>
                         </Stack>
                         <Stack>
-                          <Text textAlign="right">Cant: {gift.qty}</Text>
-                          <Text textAlign="right">
+                          <Text
+                            fontSize={["sm", "md"]}
+                            textAlign={["left", "right"]}
+                          >
                             Precio:{" "}
                             {Number(gift.unitPrice * gift.qty).toLocaleString(
                               "es-AR",
@@ -227,7 +238,7 @@ function App() {
                         _hover={{ bg: "red.300" }}
                         onClick={() => handleDeteleItem(gift.id)}
                       >
-                        <Icon as={BsTrashFill} />
+                        <Icon as={BsTrashFill} h={[3, 4]} w={[3, 4]} />
                       </Button>
                     </Stack>
                   </Stack>
@@ -252,6 +263,20 @@ function App() {
             </Stack>
           )}
         </Stack>
+        {gifts && gifts.length > 0 ? (
+          <Stack>
+            <Text>
+              Total:{" "}
+              {totalPrice.toLocaleString("es-AR", {
+                useGrouping: true,
+                style: "currency",
+                currency: "ARS",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Text>
+          </Stack>
+        ) : null}
         <Stack direction={["column", "row"]} justifyContent="space-around">
           {gifts && gifts.length > 0 ? (
             <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>

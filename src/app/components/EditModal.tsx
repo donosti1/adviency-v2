@@ -54,7 +54,7 @@ export default function EditModal(props: IEditModal) {
   return (
     <Stack>
       <Button onClick={onOpen}>
-        <Icon as={BsFillPencilFill} />
+        <Icon as={BsFillPencilFill} h={[3, 4]} w={[3, 4]} />
       </Button>
       <Modal initialFocusRef={firstField} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
