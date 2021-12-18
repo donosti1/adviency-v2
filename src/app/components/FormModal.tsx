@@ -61,14 +61,18 @@ export default function FormModal(props: IFormModal) {
           <DrawerBody overflow="hidden">
             <form onSubmit={triggerAddGiftModal}>
               <Stack color="black">
-                <Stack direction="row">
+                <Stack direction={["column", "row"]}>
                   <Input
                     ref={firstField}
                     name="giftTitle"
                     placeholder="Regalo..."
                     onChange={props.clearGiftInput}
                   />
-                  <Button alignSelf="center" onClick={randomGift}>
+                  <Button
+                    alignSelf="center"
+                    width={["100%", "auto"]}
+                    onClick={randomGift}
+                  >
                     Sorpresa!
                   </Button>
                 </Stack>
@@ -86,6 +90,7 @@ export default function FormModal(props: IFormModal) {
                 </Text>
                 <Input name="giftQty" placeholder="Cantidad" type="number" />
                 <Input name="imgSrc" placeholder="Link a la imagen..." />
+                <Input name="unitPrice" placeholder="Precio" type="number" />
                 <Button type="submit">Agregar</Button>
               </Stack>
             </form>

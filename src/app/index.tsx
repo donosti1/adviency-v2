@@ -19,6 +19,7 @@ import EditModal from "./components/EditModal";
 function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
   const [giftMessage, setGiftMessage] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const [ownerMessage, setOwnerMessage] = useState("");
 
@@ -55,6 +56,7 @@ function App() {
       const giftQty = e.currentTarget.giftQty.value;
       const giftImgSrc = e.currentTarget.imgSrc.value;
       const owner = e.currentTarget.owner.value;
+      const unitPrice = Number(e.currentTarget.unitPrice.value);
 
       if (!owner) {
         setOwnerMessage("Ingrese un destinatario");
@@ -64,10 +66,13 @@ function App() {
       const newGift: Gift = {
         id: Date.now(),
         qty:
-          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+          Number(giftQty) < 1
+            ? 1
+            : Number(giftQty) /* > 6 ? 6 : Number(giftQty) */,
         ownerId: Number(owner),
         title: giftTitle,
         imgSrc: giftImgSrc,
+        unitPrice: unitPrice,
       };
 
       setGifts([...gifts, newGift]);
@@ -89,14 +94,18 @@ function App() {
       const owner = e.currentTarget.owner.value;
       const originalOwner = e.currentTarget.originalOwner.value;
       const giftId = Number(e.currentTarget.giftId.value);
+      const unitPrice = Number(e.currentTarget.unitPrice.value);
 
       const updatedGift: Gift = {
         id: giftId,
         qty:
-          Number(giftQty) < 1 ? 1 : Number(giftQty) > 6 ? 6 : Number(giftQty),
+          Number(giftQty) < 1
+            ? 1
+            : Number(giftQty) /* > 6 ? 6 : Number(giftQty) */,
         ownerId: owner != "" ? Number(owner) : Number(originalOwner),
         title: giftTitle,
         imgSrc: giftImgSrc,
+        unitPrice: unitPrice,
       };
 
       setGifts(gifts.map((gi: Gift) => (gi.id === giftId ? updatedGift : gi)));
@@ -109,13 +118,19 @@ function App() {
 
   useEffect(() => {
     //debugger;
-    setTimeout(() => {
-      api.gifts.list().then((gifts) => setGifts(gifts));
-    }, 1500);
+    //setTimeout(() => {
+    api.gifts.list().then((gifts) => setGifts(gifts));
+    //}, 1500);
   }, []);
 
   useEffect(() => {
     if (gifts && gifts.length) {
+      const totalPrice = gifts.reduce((acc, currentGift) => {
+        return (acc = acc + currentGift.qty * currentGift.unitPrice);
+      }, 0);
+
+      setTotalPrice(totalPrice);
+
       return localStorage.setItem("adviency", JSON.stringify(gifts));
     }
     if (gifts) {
@@ -146,9 +161,9 @@ function App() {
         background="linear-gradient(22deg, var(--chakra-colors-secondary-300) 0%, var(--chakra-colors-secondary-100) 74%)"
         borderRadius="3xl"
         boxShadow="rgb(38, 57, 77) 0px 20px 30px -10px"
-        padding={8}
-        spacing={4}
-        width="container.sm"
+        padding={[4, 8]}
+        spacing={[2, 4]}
+        width={["90%", "container.sm"]}
       >
         <Heading as="h1" color="whiteAlpha.900" textAlign="center">
           Regalos
@@ -168,43 +183,64 @@ function App() {
                     alignItems="center"
                     direction="row"
                     justifyContent="space-between"
-                    spacing={8}
+                    spacing={[2, 8]}
                   >
                     <Stack
                       alignItems="center"
                       direction="row"
                       justifyContent="space-between"
-                      spacing={8}
+                      spacing={[2, 8]}
                       width="100%"
                     >
                       <Avatar name={gift.title} src={gift.imgSrc} />
                       <Stack
-                        alignItems="center"
-                        direction="row"
+                        alignItems={["flex-start", "center"]}
+                        direction={["column", "row"]}
                         justifyContent="space-between"
                         width="100%"
                       >
                         <Stack spacing={0}>
-                          <Text>{gift.title}</Text>
-                          <Text>
+                          <Text fontSize={["sm", "md"]}>
+                            {gift.title} ({gift.qty})
+                          </Text>
+                          <Text fontSize={["sm", "md"]}>
                             {Users.filter((us) => {
                               return us.value === gift.ownerId;
                             }).map((us) => us.label)}
                           </Text>
                         </Stack>
-                        <Text>(Qty: {gift.qty})</Text>
+                        <Stack>
+                          <Text
+                            fontSize={["sm", "md"]}
+                            textAlign={["left", "right"]}
+                          >
+                            Precio:{" "}
+                            {Number(gift.unitPrice * gift.qty).toLocaleString(
+                              "es-AR",
+                              {
+                                useGrouping: true,
+                                style: "currency",
+                                currency: "ARS",
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }
+                            )}
+                          </Text>
+                        </Stack>
                       </Stack>
                     </Stack>
-                    <EditModal
-                      giftId={gift.id}
-                      handleEditGift={handleEditGift}
-                    />
-                    <Button
-                      _hover={{ bg: "red.300" }}
-                      onClick={() => handleDeteleItem(gift.id)}
-                    >
-                      <Icon as={BsTrashFill} />
-                    </Button>
+                    <Stack direction={["column", "row"]}>
+                      <EditModal
+                        giftId={gift.id}
+                        handleEditGift={handleEditGift}
+                      />
+                      <Button
+                        _hover={{ bg: "red.300" }}
+                        onClick={() => handleDeteleItem(gift.id)}
+                      >
+                        <Icon as={BsTrashFill} h={[3, 4]} w={[3, 4]} />
+                      </Button>
+                    </Stack>
                   </Stack>
                 ))}
               </Stack>
@@ -227,7 +263,21 @@ function App() {
             </Stack>
           )}
         </Stack>
-        <Stack direction="row" justifyContent="space-around">
+        {gifts && gifts.length > 0 ? (
+          <Stack>
+            <Text>
+              Total:{" "}
+              {totalPrice.toLocaleString("es-AR", {
+                useGrouping: true,
+                style: "currency",
+                currency: "ARS",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </Text>
+          </Stack>
+        ) : null}
+        <Stack direction={["column", "row"]} justifyContent="space-around">
           {gifts && gifts.length > 0 ? (
             <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>
           ) : null}
