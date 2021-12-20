@@ -16,6 +16,7 @@ import { Gift } from "./types";
 import { Users } from "./constants";
 import EditModal from "./components/EditModal";
 import DuplicateModal from "./components/DuplicateModal";
+import BuyListModal from "./components/BuyList";
 
 function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
@@ -211,6 +212,15 @@ function App() {
           Regalos
         </Heading>
         <Stack>
+          {!gifts ? null : (
+            <FormModal
+              clearGiftInput={clearGiftInput}
+              clearOwnerMessage={clearOwnerMessage}
+              giftMessage={giftMessage}
+              handleAddGift={handleAddGift}
+              ownerMessage={ownerMessage}
+            />
+          )}
           {gifts && gifts.length > 0 ? (
             <Stack key={Date.now()} spacing={8}>
               <Stack
@@ -227,65 +237,68 @@ function App() {
                     justifyContent="space-between"
                     spacing={[2, 8]}
                   >
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      justifyContent="space-between"
-                      spacing={[2, 8]}
-                      width="100%"
-                    >
+                    <Stack direction="row" spacing={[2, 8]} width="100%">
                       <Avatar name={gift.title} src={gift.imgSrc} />
                       <Stack
-                        alignItems={["flex-start", "center"]}
                         direction={["column", "row"]}
                         justifyContent="space-between"
                         width="100%"
                       >
-                        <Stack spacing={0}>
-                          <Text fontSize={["sm", "md"]}>
-                            {gift.title} ({gift.qty})
-                          </Text>
-                          <Text fontSize={["sm", "md"]}>
-                            {Users.filter((us) => {
-                              return us.value === gift.ownerId;
-                            }).map((us) => us.label)}
-                          </Text>
+                        <Stack
+                          alignItems={["flex-start", "flex-start"]}
+                          direction={["column", "column"]}
+                          justifyContent="space-between"
+                          width="100%"
+                        >
+                          <Stack direction={["row", "row"]} spacing={1}>
+                            <Text fontSize={["sm", "md"]}>
+                              {gift.title} ({gift.qty})
+                            </Text>
+                            <Text
+                              color="blackAlpha.700"
+                              fontSize={["sm", "md"]}
+                            >
+                              {Users.filter((us) => {
+                                return us.value === gift.ownerId;
+                              }).map((us) => us.label)}
+                            </Text>
+                          </Stack>
+                          <Stack>
+                            <Text
+                              fontSize={["sm", "md"]}
+                              textAlign={["left", "right"]}
+                            >
+                              Precio:{" "}
+                              {Number(gift.unitPrice * gift.qty).toLocaleString(
+                                "es-AR",
+                                {
+                                  useGrouping: true,
+                                  style: "currency",
+                                  currency: "ARS",
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}
+                            </Text>
+                          </Stack>
                         </Stack>
-                        <Stack>
-                          <Text
-                            fontSize={["sm", "md"]}
-                            textAlign={["left", "right"]}
+                        <Stack alignItems="center" direction={["row", "row"]}>
+                          <EditModal
+                            giftId={gift.id}
+                            handleEditGift={handleEditGift}
+                          />
+                          <DuplicateModal
+                            giftId={gift.id}
+                            handleDuplicateGift={handleDuplicateGift}
+                          />
+                          <Button
+                            _hover={{ bg: "red.300" }}
+                            onClick={() => handleDeteleItem(gift.id)}
                           >
-                            Precio:{" "}
-                            {Number(gift.unitPrice * gift.qty).toLocaleString(
-                              "es-AR",
-                              {
-                                useGrouping: true,
-                                style: "currency",
-                                currency: "ARS",
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              }
-                            )}
-                          </Text>
+                            <Icon as={BsTrashFill} h={[3, 4]} w={[3, 4]} />
+                          </Button>
                         </Stack>
                       </Stack>
-                    </Stack>
-                    <Stack direction={["column", "row"]}>
-                      <EditModal
-                        giftId={gift.id}
-                        handleEditGift={handleEditGift}
-                      />
-                      <DuplicateModal
-                        giftId={gift.id}
-                        handleDuplicateGift={handleDuplicateGift}
-                      />
-                      <Button
-                        _hover={{ bg: "red.300" }}
-                        onClick={() => handleDeteleItem(gift.id)}
-                      >
-                        <Icon as={BsTrashFill} h={[3, 4]} w={[3, 4]} />
-                      </Button>
                     </Stack>
                   </Stack>
                 ))}
@@ -325,17 +338,13 @@ function App() {
         ) : null}
         <Stack direction={["column", "row"]} justifyContent="space-around">
           {gifts && gifts.length > 0 ? (
-            <Button onClick={handleDeteleAll}>Borrar todos los regalos</Button>
+            <>
+              <Button onClick={handleDeteleAll}>
+                Borrar todos los regalos
+              </Button>
+              <BuyListModal gifts={gifts} />
+            </>
           ) : null}
-          {!gifts ? null : (
-            <FormModal
-              clearGiftInput={clearGiftInput}
-              clearOwnerMessage={clearOwnerMessage}
-              giftMessage={giftMessage}
-              handleAddGift={handleAddGift}
-              ownerMessage={ownerMessage}
-            />
-          )}
         </Stack>
       </Stack>
     </Stack>
