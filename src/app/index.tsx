@@ -15,6 +15,7 @@ import FormModal from "./components/FormModal";
 import { Gift } from "./types";
 import { Users } from "./constants";
 import EditModal from "./components/EditModal";
+import DuplicateModal from "./components/DuplicateModal";
 
 function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
@@ -115,7 +116,48 @@ function App() {
       return false;
     }
   }
+  function handleDuplicateGift(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (gifts) {
+      const giftTitle = e.currentTarget.giftTitle.value;
+      const owner = e.currentTarget.owner.value;
 
+      if (!giftTitle) {
+        setGiftMessage("Ingresa un regalo");
+
+        return false;
+      }
+      if (!owner) {
+        setOwnerMessage("Ingrese un destinatario");
+
+        return false;
+      }
+      const giftQty = e.currentTarget.giftQty.value;
+      const giftImgSrc = e.currentTarget.imgSrc.value;
+      const unitPrice = Number(e.currentTarget.unitPrice.value);
+
+      const newGift: Gift = {
+        id: Date.now(),
+        qty:
+          Number(giftQty) < 1
+            ? 1
+            : Number(giftQty) /* > 6 ? 6 : Number(giftQty) */,
+        ownerId: Number(owner),
+        title: giftTitle,
+        imgSrc: giftImgSrc,
+        unitPrice: unitPrice,
+      };
+
+      setGifts([...gifts, newGift]);
+      e.currentTarget.giftTitle.value = "";
+      e.currentTarget.giftQty.value = "";
+      e.currentTarget.imgSrc.value = "";
+
+      return true;
+    } else {
+      return false;
+    }
+  }
   useEffect(() => {
     //debugger;
     //setTimeout(() => {
@@ -233,6 +275,10 @@ function App() {
                       <EditModal
                         giftId={gift.id}
                         handleEditGift={handleEditGift}
+                      />
+                      <DuplicateModal
+                        giftId={gift.id}
+                        handleDuplicateGift={handleDuplicateGift}
                       />
                       <Button
                         _hover={{ bg: "red.300" }}

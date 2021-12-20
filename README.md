@@ -17,9 +17,11 @@ https://twitter.com/goncy/status/1466050967808401409
 
 Consigna del día:
 
-- Día 18: La gente agrega muchos regalos y necesita saber el total de lo que gastaría, pongamos el total.
+- Día 19: La gente quiere hacer el mismo regalo pero a diferentes personas o en diferentes cantidades, agreguemos un botón de duplicar que abra el modal precargado.
 
 Consignas anteriores:
+
+- Día 18: La gente agrega muchos regalos y necesita saber el total de lo que gastaría, pongamos el total.
 
 - Día 17: Nos olvidamos de agregar un campo de precio para nuestros regalos! Aseguremosnos de mostrar el precio correcto tomando en cuenta la cantidad de unidades del regalo.
 
