@@ -71,6 +71,7 @@ export default extendTheme({
     Modal: {
       baseStyle: {
         dialog: {
+          width: ["90%", "auto"],
           /* bg: "whiteAlpha.900", */
         },
         closeButton: {
