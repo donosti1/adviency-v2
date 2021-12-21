@@ -15,9 +15,13 @@ import {
 } from "@chakra-ui/react";
 import { Gift } from "../types";
 import { Users } from "../constants";
+import "./buyList.css";
 
 export default function BuyListModal({ gifts }: { gifts: Gift[] }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const print = () => {
+    window.print();
+  };
 
   return (
     <Stack>
@@ -68,9 +72,12 @@ export default function BuyListModal({ gifts }: { gifts: Gift[] }) {
             </Stack>
           </ModalBody>
 
-          <ModalFooter>
+          <ModalFooter id="modalFooter">
             <Button colorScheme="blue" flex={1} mr={3} onClick={onClose}>
               Cerrar
+            </Button>
+            <Button colorScheme="blue" flex={1} mr={3} onClick={print}>
+              Imprimir
             </Button>
           </ModalFooter>
         </ModalContent>

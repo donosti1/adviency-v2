@@ -1,0 +1,8 @@
+@media print { 
+    #modalFooter  { display: none;}
+    .chakra-modal__content{
+        -webkit-box-shadow: none;
+        -moz-box-shadow:    none;
+        box-shadow:         none; 
+    }
+}
