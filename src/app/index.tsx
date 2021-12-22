@@ -17,6 +17,7 @@ import { Users } from "./constants";
 import EditModal from "./components/EditModal";
 import DuplicateModal from "./components/DuplicateModal";
 import BuyListModal from "./components/BuyList";
+import Player from "./components/Player";
 
 function App() {
   const [gifts, setGifts] = useState<Gift[] | null>(null);
@@ -213,13 +214,16 @@ function App() {
         </Heading>
         <Stack>
           {!gifts ? null : (
-            <FormModal
-              clearGiftInput={clearGiftInput}
-              clearOwnerMessage={clearOwnerMessage}
-              giftMessage={giftMessage}
-              handleAddGift={handleAddGift}
-              ownerMessage={ownerMessage}
-            />
+            <Stack alignSelf="center" direction="row">
+              <FormModal
+                clearGiftInput={clearGiftInput}
+                clearOwnerMessage={clearOwnerMessage}
+                giftMessage={giftMessage}
+                handleAddGift={handleAddGift}
+                ownerMessage={ownerMessage}
+              />
+              <Player />
+            </Stack>
           )}
           {gifts && gifts.length > 0 ? (
             <Stack key={Date.now()} spacing={8}>
