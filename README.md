@@ -17,9 +17,17 @@ https://twitter.com/goncy/status/1466050967808401409
 
 Consigna del día:
 
-- Día 19: La gente quiere hacer el mismo regalo pero a diferentes personas o en diferentes cantidades, agreguemos un botón de duplicar que abra el modal precargado.
+- Día 23: Ya casi es navidad! Agreguemos unos copitos de nieve a nuestra app para darle el último toque navideño ❄
 
 Consignas anteriores:
+
+- Día 22: Levantemos el espíritu navideño agregando un sonido navideño de fondo. No tan alto, tiene que estar deshabilitado por defecto y el usuario puede habilitarlo.
+
+- Día 21: Fuimos a comprar los regalos pero no teniamos datos en el celular, no queremos que le pase a alguien más, agreguemos un botón de imprimir a esa lista.
+
+- Día 20: Queremos tener una lista de regalos para ir a comprar pero no queremos que tenga los botones o precios, agreguemos un botón de previsualizar que nos abra un modal.
+
+- Día 19: La gente quiere hacer el mismo regalo pero a diferentes personas o en diferentes cantidades, agreguemos un botón de duplicar que abra el modal precargado.
 
 - Día 18: La gente agrega muchos regalos y necesita saber el total de lo que gastaría, pongamos el total.
 

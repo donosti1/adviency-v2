@@ -8,6 +8,7 @@ import {
   Icon,
   Spinner,
 } from "@chakra-ui/react";
+import Snowfall from "react-snowfall";
 import { BsTrashFill } from "react-icons/bs";
 
 import api from "./api";
@@ -200,6 +201,7 @@ function App() {
       height="100vh"
       justifyContent="center"
     >
+      <Snowfall snowflakeCount={150} />
       <Stack
         backdropFilter="blur(12px)"
         background="linear-gradient(22deg, var(--chakra-colors-secondary-300) 0%, var(--chakra-colors-secondary-100) 74%)"
